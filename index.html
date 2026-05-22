@@ -376,41 +376,41 @@
       isOpen ? panel.classList.add('open') : panel.classList.remove('open');
     }
 
-    /* ---- touch ---- */
-    document.addEventListener('touchstart', (e) => {
-      startY   = e.touches[0].clientY;
-      lastY    = startY;
-      dragging = true;
-    }, { passive: true });
-
-    document.addEventListener('touchmove', (e) => {
+    function onStart(y) {
+      startY = y; lastY = y; dragging = true;
+    }
+    function onMove(y) {
       if (!dragging) return;
-      e.preventDefault();
-      lastY = e.touches[0].clientY;
+      lastY = y;
       const diff = startY - lastY;
-
       panel.classList.add('no-anim');
-
       if (!isOpen && diff > 5) {
         const p = Math.min(diff / 220, 1);
         panel.style.transform = `translateY(${(1 - p) * 100}%)`;
       }
-
       if (isOpen && diff < -5) {
-        const pull = Math.max(0, -diff);
-        panel.style.transform = `translateY(${pull}px)`;
+        panel.style.transform = `translateY(${Math.max(0, -diff)}px)`;
       }
-    }, { passive: false });
-
-    document.addEventListener('touchend', () => {
+    }
+    function onEnd() {
       if (!dragging) return;
       dragging = false;
       const diff = startY - lastY;
+      if (!isOpen && diff > 70)       open();
+      else if (isOpen && diff < -70)  close();
+      else                            snapBack();
+    }
 
-      if (!isOpen && diff > 70)  { open(); }
-      else if (isOpen && diff < -70) { close(); }
-      else { snapBack(); }
-    });
+    /* ---- touch ---- */
+    document.addEventListener('touchstart', (e) => onStart(e.touches[0].clientY), { passive: true });
+    document.addEventListener('touchmove',  (e) => { e.preventDefault(); onMove(e.touches[0].clientY); }, { passive: false });
+    document.addEventListener('touchend',   () => onEnd());
+
+    /* ---- mouse (desktop) ---- */
+    document.addEventListener('mousedown',  (e) => onStart(e.clientY));
+    document.addEventListener('mousemove',  (e) => { if (dragging) onMove(e.clientY); });
+    document.addEventListener('mouseup',    () => onEnd());
+    document.addEventListener('mouseleave', () => onEnd());
 
     /* ---- handle tap ---- */
     handle.addEventListener('click', () => isOpen ? close() : open());
