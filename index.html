@@ -47,6 +47,15 @@
       object-fit: cover;
     }
 
+    /* imagem de PC em telas largas */
+    #bgDesktop { display: none; }
+    #bgMobile  { display: block; }
+
+    @media (min-width: 768px) {
+      #bgDesktop { display: block; }
+      #bgMobile  { display: none; }
+    }
+
     /* gradiente de baixo para guiar o swipe */
     .video-layer::after {
       content: '';
@@ -246,7 +255,8 @@
 
   <!-- ========== FUNDO ========== -->
   <div class="video-layer">
-    <img src="assets/fundohazermobile.png" alt="">
+    <img id="bgMobile"  src="assets/fundohazermobile.png" alt="">
+    <img id="bgDesktop" src="assets/hazefundopc.png" alt="">
   </div>
 
   <!-- ========== SWIPE HINT ========== -->
@@ -303,7 +313,7 @@
       <!-- Botões de ação -->
       <div class="actions">
 
-        <a href="https://instagram.com/haze.digital_" class="action-btn instagram" target="_blank" rel="noopener">
+        <a href="https://instagram.com/sejahaze" class="action-btn instagram" target="_blank" rel="noopener">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
             <circle cx="12" cy="12" r="4"/>
